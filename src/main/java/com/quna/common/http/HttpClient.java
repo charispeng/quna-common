@@ -2,7 +2,9 @@ package com.quna.common.http;
 
 import org.apache.http.protocol.HttpContext;
 
-import com.quna.common.exception.http.HttpResponseHandlerException;
+import com.quna.common.exception.http.RemoteAccessException;
+import com.quna.common.exception.http.HttpClientCreateException;
+import com.quna.common.exception.http.HttpResponseHandleException;
 
 public interface HttpClient{
 	
@@ -16,30 +18,30 @@ public interface HttpClient{
 	 * 获取apache http client
 	 * @return
 	 */
-	org.apache.http.client.HttpClient getHttpClient(HttpRequest httpRequest) throws HttpResponseHandlerException;
+	org.apache.http.client.HttpClient getHttpClient(HttpRequest httpRequest) throws HttpClientCreateException;
 	
 	/**
 	 * 执行http请求
 	 * @param httpRequest
 	 * @return
-	 * @throws HttpResponseHandlerException
+	 * @throws HttpResponseHandleException
 	 */
-	HttpResponse execute(HttpRequest httpRequest) throws HttpResponseHandlerException;
+	HttpResponse execute(HttpRequest httpRequest) throws RemoteAccessException;
 	
 	/**
 	 * 传入返回处理类
 	 * @param request
 	 * @param handler
 	 * @return
-	 * @throws HttpResponseHandlerException
+	 * @throws HttpResponseHandleException
 	 */
-	<T> T execute(HttpRequest request,HttpResponseHandler<T> handler) throws HttpResponseHandlerException;
+	<T> T execute(HttpRequest request,HttpResponseHandler<T> handler) throws RemoteAccessException,HttpResponseHandleException;
 	
 	/**
 	 * 将结果执行返回字符串
 	 * @param request
 	 * @return
-	 * @throws HttpResponseHandlerException
+	 * @throws HttpResponseHandleException
 	 */
-	String executeToText(HttpRequest httpRequest) throws HttpResponseHandlerException;	
+	String executeToText(HttpRequest httpRequest) throws RemoteAccessException,HttpResponseHandleException;	
 }

@@ -1,6 +1,6 @@
 package com.quna.common.http.client;
 
-import com.quna.common.exception.http.HttpResponseHandlerException;
+import com.quna.common.exception.http.HttpResponseHandleException;
 import com.quna.common.http.HttpResponse;
 import com.quna.common.http.HttpResponseHandler;
 
@@ -13,11 +13,11 @@ public class DefaultHttpResponseHandler implements HttpResponseHandler<String>{
 	}
 	
 	@Override
-	public String handle(HttpResponse httpResponse) throws HttpResponseHandlerException {
+	public String handle(HttpResponse httpResponse) throws HttpResponseHandleException {
 		try{
 			return httpResponse.getText();
 		}catch(Exception e){
-			throw new HttpResponseHandlerException("处理返回的httpResponse异常",e);
+			throw new HttpResponseHandleException("处理返回的httpResponse异常",e);
 		}finally{
 			try{
 				httpResponse.close();

@@ -1,6 +1,6 @@
 package com.quna.common.http.client;
 
-import com.quna.common.exception.http.HttpResponseHandlerException;
+import com.quna.common.exception.http.HttpClientCreateException;
 import com.quna.common.http.HttpRequest;
 import com.quna.common.http.utils.HttpClients;
 
@@ -19,7 +19,7 @@ import com.quna.common.http.utils.HttpClients;
  */
 public class PoolHttpClient extends AbstractHttpClient {
 	@Override
-	public org.apache.http.client.HttpClient getHttpClient(HttpRequest httpRequest) throws HttpResponseHandlerException{
+	public org.apache.http.client.HttpClient getHttpClient(HttpRequest httpRequest) throws HttpClientCreateException{
 		return HttpClients.buildClient(httpRequest);
 	}
 }

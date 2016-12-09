@@ -31,9 +31,9 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.pool.PoolStats;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
-import org.apache.log4j.Logger;
 
-import com.quna.common.exception.http.HttpResponseHandlerException;
+import com.quna.common.exception.http.HttpClientCreateException;
+import com.quna.common.exception.http.HttpResponseHandleException;
 import com.quna.common.http.Certificate;
 import com.quna.common.http.CertificateType;
 import com.quna.common.http.HttpRequest;
@@ -41,6 +41,8 @@ import com.quna.common.http.HttpTimeOut;
 import com.quna.common.http.ProxyRoute;
 import com.quna.common.http.client.BasicHttpTimeout;
 import com.quna.common.http.client.BasicProxyRoute;
+import com.quna.common.logger.LogUtil;
+import com.quna.common.logger.Logger;
 
 /**
  * <pre>
@@ -99,7 +101,7 @@ public final class HttpClients{
     /**
      * 日志记录器.
      */
-    protected static Logger logger						= Logger.getLogger(HttpClients.class);
+    protected static Logger LOGGER						= LogUtil.getLoggerFactory(HttpClients.class).create(HttpClients.class);
     
     /**
      * 设置路由检测地址
@@ -118,8 +120,8 @@ public final class HttpClients{
 		                    try {
 		                    	//获取日志信息
 		                        PoolStats stats = getPoolStats();
-		                        if(logger.isInfoEnabled()){
-		                        	logger.info("HttpPool Stats->Max:" + stats.getMax() + ", Available:" + stats.getAvailable() + ", Leased:" + stats.getLeased() + ", Pending:" + stats.getPending());
+		                        if(LOGGER.isInfoEnabled()){
+		                        	LOGGER.info("HttpPool Stats->Max:" + stats.getMax() + ", Available:" + stats.getAvailable() + ", Leased:" + stats.getLeased() + ", Pending:" + stats.getPending());
 		                        }
 		                        //关闭过期连接
 		                        closeExpiredConnections();
@@ -151,11 +153,11 @@ public final class HttpClients{
 		                .build();
 			
 		} catch (KeyStoreException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} catch (KeyManagementException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} catch (NoSuchAlgorithmException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
     	cm 		= new PoolingHttpClientConnectionManager(registry);    	
         //cm 	= new PoolingHttpClientConnectionManager(TIME_TO_LIVE, TimeUnit.MILLISECONDS);
@@ -185,9 +187,9 @@ public final class HttpClients{
     /**
      * 获取默认配置的 HttpClient并指定代理地址.
      * @return
-     * @throws HttpResponseHandlerException
+     * @throws HttpResponseHandleException
      */
-    public static CloseableHttpClient buildClient(HttpRequest request) throws HttpResponseHandlerException {
+    public static CloseableHttpClient buildClient(HttpRequest request) throws HttpClientCreateException {
         // 判断设置 建立Socket连接最大等待时间 和 数据下载最大等待时间 是否有效并且必须大于1毫秒.
         // 否则自动采用当前默认配置参数.
     	HttpTimeOut httpTimeOut			= request.getHttpTimeOut();
@@ -221,9 +223,9 @@ public final class HttpClients{
      * 构建特殊的ssl httpclient
      * @param certificate
      * @return
-     * @throws HttpResponseHandlerException
+     * @throws HttpResponseHandleException
      */
-    public static CloseableHttpClient buildSSLClient(HttpRequest request) throws HttpResponseHandlerException{
+    public static CloseableHttpClient buildSSLClient(HttpRequest request) throws HttpClientCreateException{
     	//没有设置证书信息
     	if(null == request.getCertificate()){
     		return buildClient(request);
@@ -264,7 +266,7 @@ public final class HttpClients{
 	    		sc 							= SSLContexts.custom().loadTrustMaterial(ks,TrustSelfSignedStrategy.INSTANCE).build();
 	    	}
         }catch(Exception e){
-        	throw new HttpResponseHandlerException("",e);
+        	throw new HttpClientCreateException(e);
         }
     	SSLConnectionSocketFactory ssf	= new SSLConnectionSocketFactory(sc,NoopHostnameVerifier.INSTANCE);//new String[] { "TLSv1" },null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
     	clientBuilder.setSSLSocketFactory(ssf);

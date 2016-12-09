@@ -1,6 +1,6 @@
 package com.quna.common.http;
 
-import com.quna.common.exception.http.HttpResponseHandlerException;
+import com.quna.common.exception.http.HttpResponseHandleException;
 
 /** 
  * <pre>
@@ -21,7 +21,7 @@ public interface HttpResponseHandler<T> {
 	 * 处理返回的
 	 * @param response
 	 * @return
-	 * @throws HttpResponseHandlerException
+	 * @throws HttpResponseHandleException
 	 */
-	T handle(HttpResponse httpResponse) throws HttpResponseHandlerException;
+	T handle(HttpResponse httpResponse) throws HttpResponseHandleException;
 }

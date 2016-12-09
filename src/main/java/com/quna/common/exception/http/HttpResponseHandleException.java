@@ -15,21 +15,21 @@ package com.quna.common.exception.http;
  */
 
 @SuppressWarnings("serial")
-public class HttpResponseHandlerException extends Exception {
+public class HttpResponseHandleException extends Exception {
 
-	public HttpResponseHandlerException(){
+	public HttpResponseHandleException(){
 		super();
 	}
 	
-	public HttpResponseHandlerException(String message){
+	public HttpResponseHandleException(String message){
 		super(message);
 	}
 	
-	public HttpResponseHandlerException(Throwable cause){
+	public HttpResponseHandleException(Throwable cause){
        super(cause);
     }
 	
-	public HttpResponseHandlerException(String message, Throwable cause){
+	public HttpResponseHandleException(String message, Throwable cause){
         super(message, cause);
     }
 }
