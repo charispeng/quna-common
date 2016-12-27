@@ -28,6 +28,9 @@ public class LogUtil {
 			} catch (ClassNotFoundException e) {
 			}
 		}
+//		if (loggerFactory == null) {
+//			loggerFactory	= com.quna.common.logger.jdk.JdkLoggerFactory.INSTANCE;
+//		}
 		if (loggerFactory == null)
 			loggerFactory = DefaultLoggerFactory.getDefault();
 
