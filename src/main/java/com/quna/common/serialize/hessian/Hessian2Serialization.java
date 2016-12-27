@@ -11,6 +11,8 @@ import com.quna.common.serialize.Serialization;
 
 public class Hessian2Serialization implements Serialization {
 
+	private static final SerializerFactory SERIALZER_FACTORY	= SerializerFactory.createDefault();
+	
 	@Override
 	public byte[] serialize(Object object) throws IOException {
 		ByteArrayOutputStream os	= null;
@@ -18,7 +20,7 @@ public class Hessian2Serialization implements Serialization {
 		try{
 			os		= new ByteArrayOutputStream();
 			ho		= new Hessian2Output(os);
-			ho.setSerializerFactory(SerializerFactory.createDefault());
+			ho.setSerializerFactory(SERIALZER_FACTORY);
 			ho.writeObject(object);
 			ho.flush();
 			return os.toByteArray();
@@ -35,7 +37,7 @@ public class Hessian2Serialization implements Serialization {
 		try{
 			is	= new ByteArrayInputStream(bytes);
 			hi	= new Hessian2Input(is);
-			hi.setSerializerFactory(SerializerFactory.createDefault());
+			hi.setSerializerFactory(SERIALZER_FACTORY);
 			return hi.readObject();
 		}finally{
 			try{hi.close();}catch(Exception e){}
@@ -45,7 +47,7 @@ public class Hessian2Serialization implements Serialization {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T deserialize(Class<T> clazz, byte[] bytes) throws IOException {
+	public <T> T deserialize(byte[] bytes,Class<T> clazz) throws IOException {
 		return (T)deserialize(bytes);
 	}
 

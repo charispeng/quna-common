@@ -35,7 +35,7 @@ public interface HttpClient{
 	 * @return
 	 * @throws HttpResponseHandleException
 	 */
-	<T> T execute(HttpRequest request,HttpResponseHandler<T> handler) throws RemoteAccessException,HttpResponseHandleException;
+	<T> T execute(HttpRequest request,HttpResponseHandler<T> handler) throws RemoteAccessException;
 	
 	/**
 	 * 将结果执行返回字符串
@@ -43,5 +43,5 @@ public interface HttpClient{
 	 * @return
 	 * @throws HttpResponseHandleException
 	 */
-	String executeToText(HttpRequest httpRequest) throws RemoteAccessException,HttpResponseHandleException;	
+	String executeToText(HttpRequest httpRequest) throws RemoteAccessException;	
 }

@@ -10,7 +10,7 @@ public class FastjsonSerialzation implements Serialization {
 		try {
 			clazz.getDeclaredConstructor();
 			return true;
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}
@@ -21,12 +21,13 @@ public class FastjsonSerialzation implements Serialization {
 	}
 
 	@Override
-	public Object deserialize(byte[] bytes) {
-		return JSONObject.parse(bytes);
+	public Object deserialize(byte[] bytes) throws ClassNotFoundException {
+		//return JSONObject.parse(bytes);
+		throw new ClassNotFoundException();
 	}
 
 	@Override
-	public <T> T deserialize(Class<T> clazz, byte[] bytes) {
+	public <T> T deserialize(byte[] bytes,Class<T> clazz) {
 		return JSON.parseObject(bytes, clazz);
 	}
 

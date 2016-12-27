@@ -77,7 +77,7 @@ public class Main {
 		Serialization se = new Hessian2Serialization();
 		byte[] bytes	 = se.serialize(User.testUser);
 		System.out.println(Base64.encodeBase64String(bytes).length());
-		System.out.println(se.deserialize(User.class, bytes));
+		System.out.println(se.deserialize(bytes,User.class));
 		
 		
 		
@@ -89,6 +89,6 @@ public class Main {
 		Serialization se3 = new FastjsonSerialzation();
 		byte[] bytes3	 = se3.serialize(User.testUser);
 		System.out.println(new String(bytes3));
-		System.out.println(se3.deserialize(User.class, bytes3));
+		System.out.println(se3.deserialize(bytes3,User.class));
 	}
 }

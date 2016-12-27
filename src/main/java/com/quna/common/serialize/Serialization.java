@@ -8,5 +8,5 @@ public interface Serialization {
 	
 	Object deserialize(byte[] bytes) throws IOException,ClassNotFoundException;
 	
-	<T> T deserialize(Class<T> clazz,byte[] bytes) throws IOException,ClassNotFoundException;
+	<T> T deserialize(byte[] bytes,Class<T> clazz) throws IOException,ClassNotFoundException;
 }

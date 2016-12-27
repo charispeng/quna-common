@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.KryoObjectInput;
@@ -15,15 +14,8 @@ import com.quna.common.serialize.Serialization;
 import de.javakaffee.kryoserializers.KryoReflectionFactorySupport;
 
 public class KryoSerialization implements Serialization {
-
-	public static boolean checkZeroArgConstructor(Class<?> clazz){
-		try {
-			clazz.getDeclaredConstructor();
-			return true;
-		} catch (NoSuchMethodException | SecurityException e) {
-			return false;
-		}
-	}
+	
+	private static final Kryo KRYO	= new KryoReflectionFactorySupport();
 	
 	@Override
 	public byte[] serialize(Object object) throws IOException {
@@ -32,15 +24,8 @@ public class KryoSerialization implements Serialization {
 		KryoObjectOutput ko 		= null;
 		try{
 			os						= new ByteArrayOutputStream();
-			output					= new Output(os);
-			Kryo kryo				= new KryoReflectionFactorySupport();
-			/*
-			Kryo kryo				= new Kryo();
-			if(!checkZeroArgConstructor(object.getClass())){
-				kryo.setDefaultSerializer(JavaSerializer.class);
-			}
-			*/		
-			ko						= new KryoObjectOutput(kryo,output);
+			output					= new Output(os);	
+			ko						= new KryoObjectOutput(KRYO,output);
 			ko.writeObject(object);
 			ko.flush();			
 			return os.toByteArray();
@@ -59,16 +44,7 @@ public class KryoSerialization implements Serialization {
 		try{
 			in					= new ByteArrayInputStream(bytes);
 			input				= new Input(in);
-			Kryo kryo			= new KryoReflectionFactorySupport();
-			/*
-			Kryo kryo			= new Kryo();
-			Class<?> clazz		= new Kryo().readClass(input).getType();
-			input.rewind();
-			if(!checkZeroArgConstructor(clazz)){
-				kryo.setDefaultSerializer(JavaSerializer.class);
-			}
-			*/
-			ki					= new KryoObjectInput(kryo,input);
+			ki					= new KryoObjectInput(KRYO,input);
 			return ki.readObject();
 		}finally{
 			try{ki.close();}catch(Exception e){}
@@ -79,7 +55,7 @@ public class KryoSerialization implements Serialization {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T deserialize(Class<T> clazz, byte[] bytes) throws IOException, ClassNotFoundException {
+	public <T> T deserialize(byte[] bytes,Class<T> clazz) throws IOException, ClassNotFoundException {
 		return (T)deserialize(bytes);
 	}
 }
