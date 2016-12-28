@@ -18,15 +18,17 @@ public class ProtostuffSmileSerialization implements Serialization {
 	@Override
 	public byte[] serialize(Object object) throws IOException {
         Schema schema 		= ProtostuffUtils.getSchema(object.getClass());
-        LinkedBuffer buffer = LinkedBuffer.allocate(1024 * 1024);
+        LinkedBuffer buffer = ProtostuffUtils.getLinkedBuffer();
         byte[] protostuff 	= null;
-        try {
-            protostuff 		= SmileIOUtil.toByteArray(object, schema, true, buffer);
-        } catch (Exception e) {
-            throw new RuntimeException("序列化(" + object.getClass() + ")对象(" + object + ")发生异常!", e);
-        } finally {
-            buffer.clear();
-        }
+        synchronized (buffer) {
+        	try {
+                protostuff 		= SmileIOUtil.toByteArray(object, schema, true, buffer);
+            } catch (Exception e) {
+                throw new RuntimeException("序列化(" + object.getClass() + ")对象(" + object + ")发生异常!", e);
+            } finally {
+                buffer.clear();
+            }
+		}
         return protostuff;
 	}
 
