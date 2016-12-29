@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import sun.reflect.ReflectionFactory;
-
 import com.dyuproject.protostuff.JsonIOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
@@ -13,22 +11,22 @@ import com.quna.common.serialize.Serialization;
 import com.quna.common.serialize.protostuff.ProtostuffUtils;
 
 public class ProtostuffJsonSerialization implements Serialization {
+	private LinkedBuffer buffer				= LinkedBuffer.allocate(1024);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public byte[] serialize(Object object) throws IOException {
-        Schema schema 		= ProtostuffUtils.getSchema(object.getClass());
-        LinkedBuffer buffer = ProtostuffUtils.getLinkedBuffer();
-        byte[] protostuff 	= null;
+        Schema schema 						= ProtostuffUtils.getSchema(object.getClass());
+        byte[] protostuff 					= null;
         synchronized (buffer) {
         	try {
-                protostuff 		= JsonIOUtil.toByteArray(object, schema, true, buffer);
+                protostuff 		= JsonIOUtil.toByteArray(object, schema, true,buffer);
             } catch (Exception e) {
                 throw new RuntimeException("序列化(" + object.getClass() + ")对象(" + object + ")发生异常!", e);
             } finally {
-                buffer.clear();
+                buffer.clear();               
             }
-		}
+		}        
         return protostuff;
 	}
 
@@ -44,11 +42,10 @@ public class ProtostuffJsonSerialization implements Serialization {
         try {
 			instance 							= clazz.newInstance();
         }catch(Exception e){
-        	ReflectionFactory reflectionFactory	= ReflectionFactory.getReflectionFactory();
-    		try {
-    			Constructor<T>  constructor		= (Constructor<T>)reflectionFactory.newConstructorForSerialization(clazz, Object.class.getDeclaredConstructor());
-				instance						= constructor.newInstance();
-			} catch (InstantiationException e1) {
+        	try{
+	        	Constructor<T> constructor		= ProtostuffUtils.getConstructor(clazz);
+	    		instance						= constructor.newInstance(new Object[0]);
+	        } catch (InstantiationException e1) {
 				throw new ClassNotFoundException(e1.getMessage());
 			} catch (IllegalAccessException e1) {
 				throw new ClassNotFoundException(e1.getMessage());
@@ -62,7 +59,7 @@ public class ProtostuffJsonSerialization implements Serialization {
 				throw new ClassNotFoundException(e1.getMessage());
 			}
         }
-        Schema<T> schema 		= (Schema<T>)ProtostuffUtils.getSchema(clazz);
+        Schema<T> schema 						= (Schema<T>)ProtostuffUtils.getSchema(clazz);
         JsonIOUtil.mergeFrom(bytes, instance, schema, true);
         return instance;
         

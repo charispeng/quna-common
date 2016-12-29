@@ -11,7 +11,7 @@ import com.quna.common.serialize.Serialization;
 
 public class Hessian2Serialization implements Serialization {
 
-	private static final SerializerFactory SERIALZER_FACTORY	= SerializerFactory.createDefault();
+	private static SerializerFactory SERIALZER_FACTORY	= SerializerFactory.createDefault();
 	
 	@Override
 	public byte[] serialize(Object object) throws IOException {

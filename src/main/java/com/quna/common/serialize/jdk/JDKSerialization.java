@@ -15,7 +15,7 @@ public class JDKSerialization implements Serialization{
 		ByteArrayOutputStream baos	= null;
 		ObjectOutputStream oos		= null;
 		try{
-			baos					= new ByteArrayOutputStream(1024);
+			baos					= new ByteArrayOutputStream();
 			oos						= new ObjectOutputStream(baos);
 			oos.writeObject(object);
 			oos.flush();

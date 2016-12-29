@@ -3,7 +3,6 @@ package com.quna.common.serialize.protostuff;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import sun.reflect.ReflectionFactory;
 
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
@@ -11,22 +10,22 @@ import com.dyuproject.protostuff.Schema;
 import com.quna.common.serialize.Serialization;
 
 public class ProtostuffSerialization implements Serialization {
-		
+	private LinkedBuffer buffer		= LinkedBuffer.allocate(1024);
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public byte[] serialize(Object object) throws IOException {	
-        Schema schema 		= ProtostuffUtils.getSchema(object.getClass());
-        LinkedBuffer buffer = ProtostuffUtils.getLinkedBuffer();
-        byte[] protostuff 	= null;
+        Schema schema 				= ProtostuffUtils.getSchema(object.getClass());
+        byte[] protostuff 			= null;
         synchronized (buffer) {
-        	 try {
-                 protostuff 		= ProtostuffIOUtil.toByteArray(object, schema, buffer);
-             } catch (Exception e) {
-                 throw new RuntimeException("序列化(" + object.getClass() + ")对象(" + object + ")发生异常!", e);
-             } finally {
-                 buffer.clear();
-             }
-		}       
+        	try {
+        		protostuff 		= ProtostuffIOUtil.toByteArray(object, schema, buffer);
+	   	     } catch (Exception e) {
+	   	         throw new RuntimeException("序列化(" + object.getClass() + ")对象(" + object + ")发生异常!", e);
+	   	     } finally {
+	   	         buffer.clear();
+	   	     }
+		}
         return protostuff;
 	}
 
@@ -42,11 +41,10 @@ public class ProtostuffSerialization implements Serialization {
         try {
 			instance 							= clazz.newInstance();
         }catch(Exception e){
-        	ReflectionFactory reflectionFactory	= ReflectionFactory.getReflectionFactory();
-    		try {
-    			Constructor<T>  constructor		= (Constructor<T>)reflectionFactory.newConstructorForSerialization(clazz, Object.class.getDeclaredConstructor());
-				instance						= constructor.newInstance();
-			} catch (InstantiationException e1) {
+        	try{
+	        	Constructor<T> constructor		= ProtostuffUtils.getConstructor(clazz);
+	    		instance						= constructor.newInstance(new Object[0]);
+	        } catch (InstantiationException e1) {
 				throw new ClassNotFoundException(e1.getMessage());
 			} catch (IllegalAccessException e1) {
 				throw new ClassNotFoundException(e1.getMessage());
@@ -60,7 +58,7 @@ public class ProtostuffSerialization implements Serialization {
 				throw new ClassNotFoundException(e1.getMessage());
 			}
         }
-        Schema<T> schema 	= (Schema<T>)ProtostuffUtils.getSchema(clazz);
+        Schema<T> schema 						= (Schema<T>)ProtostuffUtils.getSchema(clazz);
         ProtostuffIOUtil.mergeFrom(bytes, instance, schema);
         return instance;
         
