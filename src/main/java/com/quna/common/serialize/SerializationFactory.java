@@ -10,6 +10,7 @@ import com.quna.common.serialize.protostuff.ProtostuffSerialization;
 import com.quna.common.serialize.protostuff.json.ProtostuffJsonSerialization;
 import com.quna.common.serialize.protostuff.smile.ProtostuffSmileSerialization;
 
+
 public final class SerializationFactory {
 	
 	private static Serialization _DEFAULT;

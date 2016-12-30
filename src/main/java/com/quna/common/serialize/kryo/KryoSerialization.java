@@ -8,13 +8,14 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.quna.common.serialize.Serialization;
+import com.quna.common.serialize.SerializationException;
 
 import de.javakaffee.kryoserializers.KryoReflectionFactorySupport;
 
 public class KryoSerialization implements Serialization {	
 	private Kryo KRYO				= new KryoReflectionFactorySupport();	
 	@Override
-	public byte[] serialize(Object object) throws IOException{ 
+	public byte[] serialize(Object object) throws SerializationException{ 
 		ByteArrayOutputStream os	= null;
 		Output output				= null;
 		try{
@@ -26,6 +27,8 @@ public class KryoSerialization implements Serialization {
 				os.flush();
 				return os.toByteArray();
 			}
+		}catch(IOException e){
+			throw new SerializationException(e);
 		}finally{
 			try{output.close();}catch(Exception e){}
 			try{os.close();}catch(Exception e){}
@@ -33,7 +36,7 @@ public class KryoSerialization implements Serialization {
 	}
 
 	@Override
-	public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException{		
+	public Object deserialize(byte[] bytes) throws SerializationException{		
 		ByteArrayInputStream in	= null;
 		Input input				= null;
 		try{
@@ -49,7 +52,7 @@ public class KryoSerialization implements Serialization {
 	}
 	
 	@Override
-	public <T> T deserialize(byte[] bytes,Class<T> clazz) throws IOException, ClassNotFoundException{
+	public <T> T deserialize(byte[] bytes,Class<T> clazz) throws SerializationException{
 		return clazz.cast(deserialize(bytes));
 	}
 }

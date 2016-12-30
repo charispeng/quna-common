@@ -8,6 +8,7 @@ import com.dyuproject.protostuff.JsonIOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 import com.quna.common.serialize.Serialization;
+import com.quna.common.serialize.SerializationException;
 import com.quna.common.serialize.protostuff.ProtostuffUtils;
 
 public class ProtostuffJsonSerialization implements Serialization {
@@ -15,29 +16,23 @@ public class ProtostuffJsonSerialization implements Serialization {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public byte[] serialize(Object object) throws IOException {
-        Schema schema 						= ProtostuffUtils.getSchema(object.getClass());
-        byte[] protostuff 					= null;
+	public byte[] serialize(Object object) throws SerializationException{
+        Schema schema 			= ProtostuffUtils.getSchema(object.getClass());
         synchronized (buffer) {
-        	try {
-                protostuff 		= JsonIOUtil.toByteArray(object, schema, true,buffer);
-            } catch (Exception e) {
-                throw new RuntimeException("序列化(" + object.getClass() + ")对象(" + object + ")发生异常!", e);
-            } finally {
-                buffer.clear();               
-            }
-		}        
-        return protostuff;
+        	byte[] protostuff 	= JsonIOUtil.toByteArray(object, schema, true,buffer);
+            buffer.clear();
+            return protostuff;
+		}
 	}
 
 	@Override
-	public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-       throw new ClassNotFoundException();
+	public Object deserialize(byte[] bytes) throws SerializationException {
+		throw new SerializationException("This method is not supported!");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T deserialize(byte[] bytes, Class<T> clazz) throws IOException, ClassNotFoundException {
+	public <T> T deserialize(byte[] bytes, Class<T> clazz) throws SerializationException {
         T instance 								= null;
         try {
 			instance 							= clazz.newInstance();
@@ -46,22 +41,26 @@ public class ProtostuffJsonSerialization implements Serialization {
 	        	Constructor<T> constructor		= ProtostuffUtils.getConstructor(clazz);
 	    		instance						= constructor.newInstance(new Object[0]);
 	        } catch (InstantiationException e1) {
-				throw new ClassNotFoundException(e1.getMessage());
+				throw new SerializationException(e1.getMessage());
 			} catch (IllegalAccessException e1) {
-				throw new ClassNotFoundException(e1.getMessage());
+				throw new SerializationException(e1.getMessage());
 			} catch (IllegalArgumentException e1) {
-				throw new ClassNotFoundException(e1.getMessage());
+				throw new SerializationException(e1.getMessage());
 			} catch (InvocationTargetException e1) {
-				throw new ClassNotFoundException(e1.getMessage());
+				throw new SerializationException(e1.getMessage());
 			} catch (NoSuchMethodException e1) {
-				throw new ClassNotFoundException(e1.getMessage());
+				throw new SerializationException(e1.getMessage());
 			} catch (SecurityException e1) {
-				throw new ClassNotFoundException(e1.getMessage());
+				throw new SerializationException(e1.getMessage());
 			}
         }
-        Schema<T> schema 						= (Schema<T>)ProtostuffUtils.getSchema(clazz);
-        JsonIOUtil.mergeFrom(bytes, instance, schema, true);
-        return instance;
+        try{
+	        Schema<T> schema 						= (Schema<T>)ProtostuffUtils.getSchema(clazz);
+	        JsonIOUtil.mergeFrom(bytes, instance, schema, true);
+	        return instance;
+        }catch(IOException e){
+        	throw new SerializationException(e);
+        }
         
         /**
          * //处理List
