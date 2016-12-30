@@ -14,7 +14,7 @@ public class DefaultLoggerFactory implements LoggerFactory {
 		return _default;
 	}
 
-	public static void setDefault(boolean isDebugEnabled,
+	public static synchronized void setDefault(boolean isDebugEnabled,
 			boolean isInfoEnabled,
 			boolean isWarnEnabled,
 			boolean isErrorEnabled,

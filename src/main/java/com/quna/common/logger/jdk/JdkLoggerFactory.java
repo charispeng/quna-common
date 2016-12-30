@@ -7,14 +7,14 @@ public class JdkLoggerFactory implements LoggerFactory{
 
 	private String resourceBundleName;
 	
-	public static volatile JdkLoggerFactory INSTANCE	= new JdkLoggerFactory(null);
+	public static JdkLoggerFactory INSTANCE	= new JdkLoggerFactory(null);
 	
-	public static void setJdkLoggerResourceBundleName(String resourceBundleName){
-		INSTANCE					= new JdkLoggerFactory(resourceBundleName);
+	public static synchronized void setJdkLoggerResourceBundleName(String resourceBundleName){
+		INSTANCE							= new JdkLoggerFactory(resourceBundleName);
 	}
 	
 	public JdkLoggerFactory(String resourceBundleName){
-		this.resourceBundleName		= resourceBundleName;
+		this.resourceBundleName				= resourceBundleName;
 	}
 	
 	@Override
