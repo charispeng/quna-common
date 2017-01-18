@@ -99,9 +99,14 @@ public class RedisCache implements Cache{
 		Jedis jedis			= getJedis();
 		Transaction tran	= jedis.multi();
 		try{
+			/*
 			map.forEach((key,value) ->{
 				tran.set(key, value);
-			});			
+			});
+			*/
+			for(Entry<byte[],byte[]> entry : map.entrySet()){
+				tran.set(entry.getKey(), entry.getValue());
+			}
 			tran.exec();
 		}finally{
 			jedis.close();
