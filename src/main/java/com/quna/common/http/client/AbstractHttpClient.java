@@ -3,10 +3,9 @@ package com.quna.common.http.client;
 import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.quna.common.exception.http.RemoteAccessException;
 import com.quna.common.exception.http.HttpClientCreateException;
@@ -15,6 +14,8 @@ import com.quna.common.http.HttpClient;
 import com.quna.common.http.HttpRequest;
 import com.quna.common.http.HttpResponse;
 import com.quna.common.http.HttpResponseHandler;
+import com.quna.common.logger.LogUtil;
+import com.quna.common.logger.Logger;
 
 /**
  * <pre>
@@ -30,40 +31,41 @@ import com.quna.common.http.HttpResponseHandler;
  * </pre>
  */
 public abstract class AbstractHttpClient implements HttpClient {
-
-	protected static final Logger LOGGER	= LoggerFactory.getLogger(AbstractHttpClient.class);
 	
-	private HttpContext httpContext;
+	protected static Logger LOGGER		= LogUtil.getLoggerFactory(AbstractHttpClient.class).create(AbstractHttpClient.class);
 	
+	protected HttpContext httpContext;
+	
+	public AbstractHttpClient(){
+		this(new BasicHttpContext());
+	}
+	public AbstractHttpClient(HttpContext httpContext){
+		super();		
+		this.httpContext				= httpContext;
+	}
 	public HttpContext getHttpContext() {
 		return httpContext;
 	}
-	public void setHttpContext(HttpContext httpContext) {
-		this.httpContext = httpContext;
-	}	
-	public AbstractHttpClient(){
-		this(new BasicHttpContext());
-	}	
-	public AbstractHttpClient(HttpContext httpContext){
-		super();		
-		this.httpContext		= httpContext;
-	}
 	@Override
 	public HttpResponse execute(HttpRequest httpRequest) throws RemoteAccessException {
-		try{
-			if(LOGGER.isInfoEnabled()){
-				LOGGER.info("请求远程信息:===>>" + httpRequest);
-			}
-			org.apache.http.HttpResponse httpResponse	= getHttpClient(httpRequest).execute(httpRequest.getHttpRequestBase());
+		if(LOGGER.isInfoEnabled()){
+			LOGGER.info("请求远程信息:===>>" + httpRequest);
+		}
+		HttpRequestBase httpRequestBase				=  httpRequest.getHttpRequestBase();
+		try{			
+			org.apache.http.HttpResponse httpResponse= getHttpClient(httpRequest).execute(httpRequestBase);
 			if(LOGGER.isInfoEnabled()){
 				LOGGER.info("请求信息:"+ httpRequest +",远程返回信息:<<===" + httpResponse);
 			}
 			return new BasicHttpResponse(httpResponse);
 		}catch (ClientProtocolException e) {
+			httpRequestBase.abort();
 			throw new RemoteAccessException(RemoteAccessException.HTTP_PROTOCOL_ERROR,e);
 		} catch (IOException e) {
-			throw new RemoteAccessException("",e);
+			httpRequestBase.abort();
+			throw new RemoteAccessException(e);
 		} catch (HttpClientCreateException e) {
+			httpRequestBase.abort();
 			throw new RemoteAccessException(RemoteAccessException.HTTP_CLIENT_ERROR,e);
 		}
 	}

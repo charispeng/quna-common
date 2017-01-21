@@ -1,4 +1,4 @@
-package com.quna.common.http.utils;
+package com.quna.common.http;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -14,7 +14,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.quna.common.http.HttpMethod;
 import com.quna.common.utils.ObjectUtils;
 import com.quna.common.utils.StringUtils;
 

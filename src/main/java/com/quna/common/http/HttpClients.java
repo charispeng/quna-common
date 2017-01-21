@@ -1,10 +1,12 @@
-package com.quna.common.http.utils;
+package com.quna.common.http;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.Executors;
@@ -32,13 +34,7 @@ import org.apache.http.pool.PoolStats;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 
-import com.quna.common.exception.http.HttpClientCreateException;
 import com.quna.common.exception.http.HttpResponseHandleException;
-import com.quna.common.http.Certificate;
-import com.quna.common.http.CertificateType;
-import com.quna.common.http.HttpRequest;
-import com.quna.common.http.HttpTimeOut;
-import com.quna.common.http.ProxyRoute;
 import com.quna.common.http.client.BasicHttpTimeout;
 import com.quna.common.http.client.BasicProxyRoute;
 import com.quna.common.logger.LogUtil;
@@ -189,13 +185,12 @@ public final class HttpClients{
      * @return
      * @throws HttpResponseHandleException
      */
-    public static CloseableHttpClient buildClient(HttpRequest request) throws HttpClientCreateException {
+    public static CloseableHttpClient buildClient(HttpRequest request){
         // 判断设置 建立Socket连接最大等待时间 和 数据下载最大等待时间 是否有效并且必须大于1毫秒.
         // 否则自动采用当前默认配置参数.
     	HttpTimeOut httpTimeOut			= request.getHttpTimeOut();
         Integer soTimeout 				= httpTimeOut.getSoTimeOut();
         Integer connectionTimeout 		= httpTimeOut.getConnectTimeOut();
-
         RequestConfig requestConfig 	= RequestConfig.custom() 							// 获取默认的RequestConfig配置器.
                 .setSocketTimeout(soTimeout) 												// 建立Socket连接最大等待时间（单位毫秒）.
                 .setConnectTimeout(connectionTimeout) 										// 数据下载最大等待时间（单位毫秒）.
@@ -223,9 +218,15 @@ public final class HttpClients{
      * 构建特殊的ssl httpclient
      * @param certificate
      * @return
+     * @throws KeyStoreException 
+     * @throws IOException 
+     * @throws CertificateException 
+     * @throws NoSuchAlgorithmException 
+     * @throws KeyManagementException 
+     * @throws UnrecoverableKeyException 
      * @throws HttpResponseHandleException
      */
-    public static CloseableHttpClient buildSSLClient(HttpRequest request) throws HttpClientCreateException{
+    public static CloseableHttpClient buildSSLClient(HttpRequest request) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
     	//没有设置证书信息
     	if(null == request.getCertificate()){
     		return buildClient(request);
@@ -235,7 +236,6 @@ public final class HttpClients{
     	HttpTimeOut httpTimeOut			= BasicHttpTimeout.defaultBasicHttpTimeout();
         Integer soTimeout 				= httpTimeOut.getSoTimeOut();
         Integer connectionTimeout 		= httpTimeOut.getConnectTimeOut();
-
         RequestConfig requestConfig 	= RequestConfig.custom() 							// 获取默认的RequestConfig配置器.
                 .setSocketTimeout(soTimeout)												// 建立Socket连接最大等待时间（单位毫秒）.
                 .setConnectTimeout(connectionTimeout) 										// 数据下载最大等待时间（单位毫秒）.
@@ -243,7 +243,7 @@ public final class HttpClients{
                 .setRedirectsEnabled(true)
                 .setRelativeRedirectsAllowed(true)
                 .setMaxRedirects(50)
-                .build();        
+                .build();
         
         org.apache.http.impl.client.HttpClientBuilder clientBuilder = org.apache.http.impl.client.HttpClients.custom() 	// 获取默认的HttpClientBuilder配置器.  
         		.setDefaultRequestConfig(requestConfig)																	// 设置关联请求参数配置.
@@ -253,22 +253,18 @@ public final class HttpClients{
     	KeyStore ks							= null;
     	SSLContext sc						= null;
     	Certificate certificate				= request.getCertificate();
-        try{
-	    	if(null != certificate.getCertificateType() && CertificateType.PKCS12.equals(certificate.getCertificateType())){
-	    		ks							= KeyStore.getInstance(certificate.getCertificateType().name());
-	    	}else{
-	    		ks							= KeyStore.getInstance(KeyStore.getDefaultType());
-	    	}
-	    	ks.load(certificate.getContent(), certificate.getPassword().toCharArray());
-	    	if(null != certificate.getCertificateType() && CertificateType.PKCS12.equals(certificate.getCertificateType())){
-	    		sc 							= SSLContexts.custom().loadKeyMaterial(ks, certificate.getPassword().toCharArray()).build();
-	    	}else{
-	    		sc 							= SSLContexts.custom().loadTrustMaterial(ks,TrustSelfSignedStrategy.INSTANCE).build();
-	    	}
-        }catch(Exception e){
-        	throw new HttpClientCreateException(e);
-        }
-    	SSLConnectionSocketFactory ssf	= new SSLConnectionSocketFactory(sc,NoopHostnameVerifier.INSTANCE);//new String[] { "TLSv1" },null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+    	if(null != certificate.getCertificateType() && CertificateType.PKCS12.equals(certificate.getCertificateType())){
+    		ks								= KeyStore.getInstance(certificate.getCertificateType().name());
+    	}else{
+    		ks								= KeyStore.getInstance(KeyStore.getDefaultType());
+    	}
+    	ks.load(certificate.getContent(), certificate.getPassword().toCharArray());
+    	if(null != certificate.getCertificateType() && CertificateType.PKCS12.equals(certificate.getCertificateType())){
+    		sc 								= SSLContexts.custom().loadKeyMaterial(ks, certificate.getPassword().toCharArray()).build();
+    	}else{
+    		sc 								= SSLContexts.custom().loadTrustMaterial(ks,TrustSelfSignedStrategy.INSTANCE).build();
+    	}
+    	SSLConnectionSocketFactory ssf		= new SSLConnectionSocketFactory(sc,NoopHostnameVerifier.INSTANCE);//new String[] { "TLSv1" },null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
     	clientBuilder.setSSLSocketFactory(ssf);
         
         // 判断是否需要设置代理参数.

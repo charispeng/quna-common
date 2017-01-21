@@ -12,7 +12,6 @@ import org.apache.http.client.methods.HttpGet;
 
 import com.quna.common.http.client.BasicHttpRequest;
 import com.quna.common.http.client.PoolHttpClientFactory;
-import com.quna.common.http.utils.HttpClients;
 
 public class HttpTest{
 	

@@ -15,7 +15,7 @@ import com.quna.common.http.HttpMethod;
 import com.quna.common.http.HttpRequest;
 import com.quna.common.http.HttpTimeOut;
 import com.quna.common.http.ProxyRoute;
-import com.quna.common.http.utils.RequestUtils;
+import com.quna.common.http.RequestUtils;
 
 /**
  * <pre>
