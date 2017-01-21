@@ -8,7 +8,6 @@ com\quna\common\http\ProxyRoute.class
 com\quna\common\logger\Logger.class
 com\quna\common\serialize\Serializers.class
 com\quna\common\utils\NumberUtils.class
-com\quna\common\http\utils\RequestUtils.class
 com\quna\common\http\HttpClientFactory.class
 com\quna\common\utils\SoftHashMap$EntrySpliterator.class
 com\quna\common\serialize\protostuff\ProtostuffSerialization.class
@@ -28,6 +27,7 @@ com\quna\common\utils\SoftHashMap$KeySet.class
 com\quna\common\utils\ClassHelper.class
 com\quna\common\http\HttpMethod.class
 com\quna\common\utils\ConcurrentReferenceHashMap$3.class
+com\quna\common\http\HttpClients$2.class
 com\quna\common\utils\SoftHashMap$SoftHashMapSpliterator.class
 com\quna\common\serialize\SerializationException.class
 com\quna\common\utils\MD5Utils.class
@@ -37,6 +37,7 @@ com\quna\common\cache\CacheEvict.class
 com\quna\common\cache\redis\DefaultJedisPoolFactory.class
 com\quna\common\utils\SoftHashMap$ValueSpliterator.class
 com\quna\common\serialize\hessian\Hessian2Serialization.class
+com\quna\common\http\RequestUtils.class
 com\quna\common\http\client\SSLHttpClientFactory.class
 com\quna\common\utils\ConcurrentReferenceHashMap$Entries.class
 com\quna\common\utils\SoftHashMap$KeyIterator.class
@@ -60,7 +61,6 @@ com\quna\common\cache\redis\JedisPoolFactory.class
 com\quna\common\utils\ConcurrentReferenceHashMap$Task.class
 com\quna\common\serialize\protostuff\json\ProtostuffJsonSerialization.class
 com\quna\common\utils\PojoUtils.class
-com\quna\common\http\utils\HttpClients.class
 com\quna\common\http\client\BasicHttpTimeout.class
 com\quna\common\utils\EncryUtils.class
 com\quna\common\serialize\protostuff\ProtostuffUtils.class
@@ -70,11 +70,13 @@ com\quna\common\utils\_Util.class
 com\quna\common\logger\console\DefaultLoggerFactory.class
 com\quna\common\threads\DefaultThreadFactory.class
 com\quna\common\utils\ConcurrentReferenceHashMap$5.class
+com\quna\common\http\HttpClients$1.class
 com\quna\common\utils\SoftHashMap$Entry.class
 com\quna\common\utils\FileUtils.class
 com\quna\common\http\client\BasicCertificate.class
 com\quna\common\utils\ConcurrentReferenceHashMap$SoftEntryReference.class
 com\quna\common\utils\ConcurrentReferenceHashMap$Reference.class
+com\quna\common\http\HttpClients.class
 com\quna\common\utils\BAKRSAUtils.class
 com\quna\common\utils\ConcurrentReferenceHashMap$2.class
 com\quna\common\utils\SoftHashMap.class
@@ -105,11 +107,9 @@ com\quna\common\utils\ConcurrentReferenceHashMap$Segment$1.class
 com\quna\common\utils\EncodeUtils.class
 com\quna\common\utils\PojoUtils$PojoInvocationHandler.class
 com\quna\common\utils\SoftHashMap$Values.class
-com\quna\common\http\utils\HttpClients$1.class
 com\quna\common\logger\jdk\JdkLoggerFactory.class
 com\quna\common\http\HttpResponse.class
 com\quna\common\exception\http\HttpClientCreateException.class
-com\quna\common\http\utils\HttpClients$2.class
 com\quna\common\logger\LogUtil.class
 com\quna\common\http\client\BasicHttpRequest.class
 com\quna\common\utils\ConcurrentReferenceHashMap$4.class

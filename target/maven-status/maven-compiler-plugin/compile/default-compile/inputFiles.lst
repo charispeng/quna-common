@@ -8,12 +8,12 @@ D:\workspace\quna\quna-common\src\main\java\com\quna\common\logger\LoggerFactory
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\SystemUtil.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\client\DefaultHttpResponseHandler.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\ProxyRoute.java
-D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\utils\HttpClients.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\threads\DefaultThreadFactory.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\HttpClientFactory.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\client\PoolHttpClient.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\logger\commons\CommonsLoggerFactory.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\EncodeUtils.java
+D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\HttpClients.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\logger\console\DefaultLogger.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\client\SSLHttpClientFactory.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\serialize\protostuff\json\ProtostuffJsonSerialization.java
@@ -30,6 +30,7 @@ D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\HttpRequest.jav
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\SoftHashMap.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\PojoUtils.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\exception\QunaException.java
+D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\RequestUtils.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\serialize\SerializationFactory.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\DESUtils.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\NumberUtils.java
@@ -64,7 +65,6 @@ D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\CertificateType
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\client\BasicCertificate.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\client\SSLHttpClient.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\client\BasicProxyRoute.java
-D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\utils\RequestUtils.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\http\HttpClient.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\ObjectUtils.java
 D:\workspace\quna\quna-common\src\main\java\com\quna\common\utils\ReflectUtils.java
