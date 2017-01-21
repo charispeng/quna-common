@@ -38,15 +38,12 @@ public abstract class AbstractHttpClient implements HttpClient {
 	public HttpContext getHttpContext() {
 		return httpContext;
 	}
-
 	public void setHttpContext(HttpContext httpContext) {
 		this.httpContext = httpContext;
-	}
-	
+	}	
 	public AbstractHttpClient(){
 		this(new BasicHttpContext());
-	}
-	
+	}	
 	public AbstractHttpClient(HttpContext httpContext){
 		super();		
 		this.httpContext		= httpContext;
@@ -54,12 +51,12 @@ public abstract class AbstractHttpClient implements HttpClient {
 	@Override
 	public HttpResponse execute(HttpRequest httpRequest) throws RemoteAccessException {
 		try{
-			if(LOGGER.isDebugEnabled()){
-				LOGGER.debug("请求远程信息:===>>" + httpRequest);
+			if(LOGGER.isInfoEnabled()){
+				LOGGER.info("请求远程信息:===>>" + httpRequest);
 			}
 			org.apache.http.HttpResponse httpResponse	= getHttpClient(httpRequest).execute(httpRequest.getHttpRequestBase());
-			if(LOGGER.isDebugEnabled()){
-				LOGGER.debug("请求信息:"+ httpRequest +",远程返回信息:<<===" + httpResponse);
+			if(LOGGER.isInfoEnabled()){
+				LOGGER.info("请求信息:"+ httpRequest +",远程返回信息:<<===" + httpResponse);
 			}
 			return new BasicHttpResponse(httpResponse);
 		}catch (ClientProtocolException e) {
@@ -80,7 +77,6 @@ public abstract class AbstractHttpClient implements HttpClient {
 			throw new RemoteAccessException(RemoteAccessException.HTTP_RESPONSE_HANDLE_ERROR,e);
 		}
 	}
-	
 	@Override
 	public String executeToText(HttpRequest httpRequest) throws RemoteAccessException{
 		HttpResponse httpResponse			= execute(httpRequest);
@@ -90,6 +86,5 @@ public abstract class AbstractHttpClient implements HttpClient {
 		}catch (HttpResponseHandleException e) {
 			throw new RemoteAccessException(RemoteAccessException.HTTP_RESPONSE_HANDLE_ERROR,e);
 		}
-	}
-	
+	}	
 }
