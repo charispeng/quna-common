@@ -13,7 +13,8 @@ import com.quna.common.serialize.SerializationException;
 import de.javakaffee.kryoserializers.KryoReflectionFactorySupport;
 
 public class KryoSerialization implements Serialization {	
-	private Kryo KRYO				= new KryoReflectionFactorySupport();	
+	private Kryo KRYO				= new KryoReflectionFactorySupport();
+	
 	@Override
 	public byte[] serialize(Object object) throws SerializationException{ 
 		ByteArrayOutputStream os	= null;

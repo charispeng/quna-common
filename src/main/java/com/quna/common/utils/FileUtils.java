@@ -8,9 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
@@ -60,27 +61,23 @@ public abstract class FileUtils extends _Util{
 	 */
 	@SuppressWarnings("unused")
 	public static String readInputStreamToString(InputStream inputStream,String encoding){
-		ReadableByteChannel channel	= null;
+		ReadableByteChannel channel		= null;
 		try {
 			StringBuilder builder		= new StringBuilder();
 			channel						= Channels.newChannel(inputStream);
-			ByteBuffer byteBuffer		= ByteBuffer.allocate(1024);
-			
-			int read	= -1;
-			while( -1 != (read = channel.read(byteBuffer))){
-				int position	= byteBuffer.position();
-				byte[] bytes= new byte[position];
-				
-				byteBuffer.flip();
-				byteBuffer.get(bytes);
-				byteBuffer.clear();
-				
-				builder.append(new String(bytes,encoding));
-			}
-			
+			Reader reader				= Channels.newReader(channel, encoding);
+			CharBuffer charBuffer		= CharBuffer.allocate(4096);		
+			int read					= -1;
+			while( -1 != (read = reader.read(charBuffer))){
+				charBuffer.flip();
+				char[] chars			= new char[charBuffer.limit()];
+				charBuffer.get(chars);		
+				builder.append(chars);
+				charBuffer.clear();
+			}			
 			return builder.toString();
 		}catch (Exception e) {
-			throw new QunaRuntimeException("将inputStream保存为字符串");
+			throw new QunaRuntimeException("将inputStream保存为字符串",e);
 		}finally{
 			close(channel);
 		}
